@@ -1,0 +1,73 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>SMPTE NTSC Bars (Fullscreen)</title>
+<style>
+  body { margin:0; background:#000; }
+  canvas { display:block; width:100vw; height:100vh; }
+</style>
+</head>
+<body>
+<canvas id="tv"></canvas>
+<script>
+// Approx SMPTE palette with gamma-corrected shades
+const colors = {
+  white:   "#FFFFFF",
+  yellow:  "#FFFF00",
+  cyan:    "#00FFFF",
+  green:   "#00FF00",
+  magenta: "#FF00FF",
+  red:     "#FF0000",
+  blue:    "#0000FF",
+  black:   "#000000",
+  gray:    "#808080",
+  darkGray:"#404040",
+  purple:  "#800080" // PLUGE patch
+};
+
+const cvs=document.getElementById("tv");
+const ctx=cvs.getContext("2d");
+
+function resize(){
+  cvs.width=window.innerWidth;
+  cvs.height=window.innerHeight;
+  drawBars();
+}
+window.onresize=resize;
+
+function drawBars(){
+  const w=cvs.width;
+  const h=cvs.height;
+
+  // Top 2/3: SMPTE bars
+  const barW=w/7;
+  const order=["white","yellow","cyan","green","magenta","red","blue"];
+  for(let i=0;i<order.length;i++){
+    ctx.fillStyle=colors[order[i]];
+    ctx.fillRect(i*barW,0,barW,h*0.66);
+  }
+
+  // Middle strip: color + gamma shades
+  const midH=h*0.17;
+  const midY=h*0.66;
+  const midOrder=["blue","black","magenta","black","cyan","black","gray"];
+  for(let i=0;i<midOrder.length;i++){
+    ctx.fillStyle=colors[midOrder[i]];
+    ctx.fillRect(i*barW,midY,barW,midH);
+  }
+
+  // Bottom strip: PLUGE + grayscale ramp
+  const botH=h*0.17;
+  const botY=h*0.83;
+  const botOrder=["darkGray","black","purple","gray","white","black","darkGray"];
+  for(let i=0;i<botOrder.length;i++){
+    ctx.fillStyle=colors[botOrder[i]];
+    ctx.fillRect(i*barW,botY,barW,botH);
+  }
+}
+
+resize();
+</script>
+</body>
+</html>
