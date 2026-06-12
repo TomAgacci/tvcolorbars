@@ -1,0 +1,60 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>PICO‑8 NTSC Bars Fullscreen</title>
+<style>
+  body { margin:0; background:#000; }
+  canvas { display:block; width:100vw; height:100vh; }
+</style>
+</head>
+<body>
+<canvas id="tv"></canvas>
+<script>
+// Palette approximations
+const colors = {
+  gray:   "#C0C0C0",
+  yellow: "#FFFF00",
+  cyan:   "#00FFFF",
+  green:  "#00FF00",
+  magenta:"#FF00FF",
+  red:    "#FF0000",
+  blue:   "#0000FF",
+  black:  "#000000",
+  purple: "#800080" // PLUGE patch
+};
+
+const cvs=document.getElementById("tv");
+const ctx=cvs.getContext("2d");
+
+function resize(){
+  cvs.width=window.innerWidth;
+  cvs.height=window.innerHeight;
+  drawBars();
+}
+window.onresize=resize;
+
+function drawBars(){
+  const w=cvs.width;
+  const h=cvs.height;
+  const barW=w/7;
+
+  const order=["gray","yellow","cyan","green","magenta","red","blue"];
+  for(let i=0;i<order.length;i++){
+    ctx.fillStyle=colors[order[i]];
+    ctx.fillRect(i*barW,0,barW,h*0.7);
+  }
+
+  // bottom black strip
+  ctx.fillStyle=colors.black;
+  ctx.fillRect(0,h*0.7,w,h*0.3);
+
+  // PLUGE patch (purple) in black strip
+  ctx.fillStyle=colors.purple;
+  ctx.fillRect(w*0.1,h*0.8,w*0.1,h*0.1);
+}
+
+resize();
+</script>
+</body>
+</html>
